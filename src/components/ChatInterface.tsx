@@ -179,6 +179,7 @@ const ChatInterface: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [serverError, setServerError] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [profileProgress, setProfileProgress] = useState<ProfileProgress>({
     sections: [
@@ -280,6 +281,13 @@ const ChatInterface: React.FC = () => {
       }
     } catch (error) {
       console.error('Error sending message to Rasa:', error);
+      setServerError(true);
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        text: "I apologize, but I'm unable to connect to the server at the moment. Please make sure the Rasa servers are running and try again.",
+        sender: 'bot',
+        timestamp: new Date(),
+      }]);
     }
   };
 
@@ -349,9 +357,10 @@ const ChatInterface: React.FC = () => {
       setMessages(prev => [...prev, ...botResponses]);
     } catch (error) {
       console.error('Error sending message to Rasa:', error);
+      setServerError(true);
       setMessages(prev => [...prev, {
         id: Date.now().toString(),
-        text: 'Sorry, I encountered an error. Please try again.',
+        text: "I apologize, but I'm unable to connect to the server at the moment. Please make sure the Rasa servers are running and try again.",
         sender: 'bot',
         timestamp: new Date(),
       }]);
@@ -371,53 +380,31 @@ const ChatInterface: React.FC = () => {
     <Container>
       <Header>
         <TitleContainer>
-          <Logo
+          <Avatar
             src="/assets/images/blueshirt-logo.png"
             alt="Blueshirt Logo"
+            sx={{ width: 40, height: 40, marginRight: 2 }}
           />
-          <Typography 
-            variant="h6" 
-            sx={{ 
-              color: BLUESHIRT_BLUE,
-              fontWeight: 600,
-              fontSize: '1.5rem',
-              '@media (max-width: 600px)': {
-                fontSize: '1.25rem',
-              },
-            }}
-          >
-            Blueshirt Resume Builder
+          <Typography variant="h6">
+            Blueshirt Resume Bot
           </Typography>
         </TitleContainer>
-        <RightContainer>
+        {serverError && (
           <Typography 
             variant="subtitle2" 
+            color="error" 
             sx={{ 
-              color: '#6C757D',
-              fontSize: '0.85rem',
-              lineHeight: 1.2,
-              '@media (max-width: 600px)': {
-                fontSize: '0.75rem',
-              },
+              backgroundColor: '#ffebee', 
+              padding: '4px 8px', 
+              borderRadius: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
             }}
           >
-            A Project of
+            <span>⚠️</span> Server connection lost
           </Typography>
-          <Typography 
-            variant="subtitle1" 
-            sx={{ 
-              color: BLUESHIRT_BLUE, 
-              fontWeight: 500,
-              fontSize: '1rem',
-              lineHeight: 1.2,
-              '@media (max-width: 600px)': {
-                fontSize: '0.85rem',
-              },
-            }}
-          >
-            Mayor Eric B. Africa
-          </Typography>
-        </RightContainer>
+        )}
       </Header>
       <ProgressIndicator progress={profileProgress} />
       <ChatContainer ref={chatContainerRef}>
