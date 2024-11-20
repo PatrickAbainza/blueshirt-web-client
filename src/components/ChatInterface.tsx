@@ -14,8 +14,12 @@ import axios from 'axios';
 import ProgressIndicator from './ProgressIndicator';
 
 const RASA_SERVER_URL = process.env.REACT_APP_RASA_API_URL || 'http://localhost:5005';
+
+// Design System Constants
 const BLUESHIRT_BLUE = '#007BFF';
 const BLUESHIRT_YELLOW = '#FFD700';
+const BLUESHIRT_GRAY = '#6C757D';
+const BLUESHIRT_LIGHT = '#F8F9FA';
 
 interface Message {
   id: string;
@@ -44,59 +48,90 @@ const Container = styled(Box)({
   display: 'flex',
   flexDirection: 'column',
   height: '100vh',
-  backgroundColor: '#F8F9FA',
+  backgroundColor: BLUESHIRT_LIGHT,
 });
 
+// Header Styles
 const Header = styled(Paper)({
-  padding: '14px',
+  padding: '16px 24px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  borderBottom: '1px solid #E9ECEF',
-  backgroundColor: '#fff',
+  backgroundColor: BLUESHIRT_BLUE,
+  borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+  position: 'relative',
   zIndex: 1,
-  '@media (max-width: 600px)': {
-    padding: '10px',
-  },
+  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
 });
 
-const TitleContainer = styled(Box)({
+const TitleSection = styled(Box)({
   display: 'flex',
   alignItems: 'center',
-  gap: '14px',
-  flex: '1',
-  '@media (max-width: 600px)': {
-    gap: '10px',
-  },
+  gap: '12px',
 });
 
-const RightContainer = styled(Box)({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-end',
-  gap: '3px',
-  marginLeft: '12px',
-});
-
-const Logo = styled('img')({
-  height: '42px',
+const SmallLogo = styled('img')({
+  height: '32px',
   width: 'auto',
-  objectFit: 'contain',
-  '@media (max-width: 600px)': {
-    height: '32px',
-  },
+  filter: 'brightness(0) invert(1)', // Makes the logo white
 });
 
+const Title = styled(Typography)({
+  fontSize: '24px',
+  fontWeight: 700, // Bolder font for Filipino-style impact
+  color: '#FFFFFF',
+  margin: 0,
+  letterSpacing: '0.5px',
+});
+
+const ProjectCredit = styled(Typography)({
+  fontSize: '14px',
+  color: 'rgba(255, 255, 255, 0.9)',
+  fontWeight: 500,
+});
+
+// Chat Container Styles
 const ChatContainer = styled(Box)({
   flex: 1,
-  overflow: 'auto',
-  padding: '16px',
-  display: 'flex',
-  flexDirection: 'column',
+  overflowY: 'auto',
+  padding: '20px',
   position: 'relative',
-  '@media (max-width: 600px)': {
-    padding: '12px',
+  backgroundColor: BLUESHIRT_LIGHT,
+  '&::-webkit-scrollbar': {
+    width: '8px',
   },
+  '&::-webkit-scrollbar-track': {
+    background: '#f1f1f1',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    background: BLUESHIRT_GRAY,
+    borderRadius: '8px',
+  },
+  '&::-webkit-scrollbar-thumb:hover': {
+    background: '#555',
+  },
+});
+
+const ChatBackgroundWatermark = styled(Box)({
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '60%',
+  height: 'auto',
+  opacity: 0.03,
+  pointerEvents: 'none',
+  zIndex: 0,
+  '& img': {
+    width: '100%',
+    height: 'auto',
+    objectFit: 'contain',
+  },
+});
+
+const ChatContent = styled(Box)({
+  position: 'relative',
+  zIndex: 1,
 });
 
 const WatermarkContainer = styled(Box)({
@@ -126,7 +161,7 @@ const Logo = styled('img')({
 
 const WelcomeText = styled(Typography)({
   textAlign: 'center',
-  color: '#333',
+  color: '#fff',
   marginBottom: '20px',
   fontWeight: 500,
 });
@@ -134,19 +169,25 @@ const WelcomeText = styled(Typography)({
 const MessageBubble = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'isUser',
 })<{ isUser: boolean }>(({ isUser }) => ({
+  padding: '12px 16px',
   maxWidth: '85%',
-  padding: '12px',
-  marginBottom: '8px',
   borderRadius: '16px',
-  alignSelf: isUser ? 'flex-end' : 'flex-start',
-  backgroundColor: isUser ? BLUESHIRT_BLUE : '#fff',
-  color: isUser ? '#fff' : '#212529',
-  borderBottomRightRadius: isUser ? '4px' : '16px',
-  borderBottomLeftRadius: isUser ? '16px' : '4px',
-  border: isUser ? 'none' : '1px solid #E9ECEF',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '8px',
+  backgroundColor: isUser ? BLUESHIRT_BLUE : '#FFFFFF',
+  color: isUser ? '#FFFFFF' : '#000000',
+  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+  position: 'relative',
+  '&:before': {
+    content: '""',
+    position: 'absolute',
+    bottom: '8px',
+    [isUser ? 'right' : 'left']: '-8px',
+    borderStyle: 'solid',
+    borderWidth: '8px',
+    borderColor: 'transparent',
+    borderRightColor: isUser ? 'transparent' : '#FFFFFF',
+    borderLeftColor: isUser ? BLUESHIRT_BLUE : 'transparent',
+    transform: isUser ? 'none' : 'rotate(180deg)',
+  },
 }));
 
 const ButtonContainer = styled(Box)({
@@ -159,17 +200,14 @@ const ButtonContainer = styled(Box)({
 });
 
 const ActionButton = styled(Button)({
-  textAlign: 'left',
-  justifyContent: 'flex-start',
+  backgroundColor: BLUESHIRT_YELLOW,
+  color: '#000000',
+  padding: '8px 16px',
+  borderRadius: '8px',
   textTransform: 'none',
-  backgroundColor: '#F8F9FA',
-  color: BLUESHIRT_BLUE,
-  border: `1px solid ${BLUESHIRT_BLUE}`,
-  padding: '12px 16px',
-  lineHeight: 1.4,
+  fontWeight: 600,
   '&:hover': {
-    backgroundColor: BLUESHIRT_BLUE,
-    color: '#fff',
+    backgroundColor: '#FFE44D',
   },
 });
 
@@ -186,11 +224,12 @@ const ButtonDescription = styled('span')({
 });
 
 const InputContainer = styled(Box)({
-  padding: '12px',
-  backgroundColor: '#fff',
+  padding: '16px',
+  backgroundColor: '#FFFFFF',
   borderTop: '1px solid #E9ECEF',
   display: 'flex',
-  gap: '8px',
+  gap: '12px',
+  boxShadow: '0 -2px 4px rgba(0,0,0,0.05)',
 });
 
 const ChatInterface: React.FC = () => {
@@ -396,93 +435,103 @@ const ChatInterface: React.FC = () => {
 
   return (
     <Container>
-      <Header>
-        <TitleContainer>
-          <Avatar
-            src="/assets/images/blueshirt-logo.png"
-            alt="Blueshirt Logo"
-            sx={{ width: 40, height: 40, marginRight: 2 }}
-          />
-          <Typography variant="h6">
-            Blueshirt Resume Bot
-          </Typography>
-        </TitleContainer>
+      <Header elevation={0}>
+        <TitleSection>
+          <SmallLogo src="/assets/images/blueshirt-logo.png" alt="Blueshirt Logo" />
+          <Title variant="h1">Blueshirt Resume Builder</Title>
+        </TitleSection>
+        <ProjectCredit>
+          A Project of Mayor Eric B. Africa
+        </ProjectCredit>
         {serverError && (
-          <Typography 
-            variant="subtitle2" 
-            color="error" 
-            sx={{ 
-              backgroundColor: '#ffebee', 
-              padding: '4px 8px', 
-              borderRadius: '4px',
+          <Typography
+            color="error"
+            sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: '4px'
+              gap: '4px',
+              position: 'absolute',
+              bottom: '-28px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              backgroundColor: '#FFE0E0',
+              padding: '6px 12px',
+              borderRadius: '8px',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              color: '#D32F2F',
+              fontWeight: 500,
             }}
           >
             <span>⚠️</span> Server connection lost
           </Typography>
         )}
       </Header>
+
       <ProgressIndicator progress={profileProgress} />
+      
       <ChatContainer ref={chatContainerRef}>
-        <WatermarkContainer>
-          <LogoContainer>
-            <Logo src="/assets/images/gapan-logo.png" alt="Gapan Logo" />
-            <Logo src="/assets/images/blueshirt-logo-text.png" alt="Blueshirt Logo" />
-            <Logo src="/assets/images/mayor-logo.png" alt="Mayor Logo" />
-          </LogoContainer>
-          <WelcomeText variant="h6">
-            A project of Mayor Eric Pascual and the City Government of Gapan
-          </WelcomeText>
-        </WatermarkContainer>
-        {messages.map((message) => (
-          <Box
-            key={message.id}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: message.sender === 'user' ? 'flex-end' : 'flex-start',
-              marginBottom: 2,
-            }}
-          >
-            <MessageBubble isUser={message.sender === 'user'}>
-              <Typography variant="body1" style={{ whiteSpace: 'pre-line' }}>
-                {message.text}
-              </Typography>
-              {message.buttons && message.sender === 'bot' && (
-                <ButtonContainer>
-                  {message.buttons.map((button, index) => {
-                    const [title, description] = button.title.split('\n');
-                    return (
-                      <ActionButton
-                        key={index}
-                        variant="outlined"
-                        onClick={() => handleButtonClick(button.payload)}
-                        fullWidth
-                      >
-                        <Box sx={{ width: '100%' }}>
-                          <ButtonTitle>{title}</ButtonTitle>
-                          <ButtonDescription>{description}</ButtonDescription>
-                        </Box>
-                      </ActionButton>
-                    );
-                  })}
-                </ButtonContainer>
-              )}
-            </MessageBubble>
-            <Typography
-              variant="caption"
+        <ChatBackgroundWatermark>
+          <img src="/assets/images/gapan-logo.png" alt="Gapan City Logo" />
+        </ChatBackgroundWatermark>
+        
+        <ChatContent>
+          <WatermarkContainer>
+            <LogoContainer>
+              <Logo src="/assets/images/blueshirt-logo-text.png" alt="Blueshirt Logo" />
+              <Logo src="/assets/images/mayor-logo.png" alt="Mayor Logo" />
+            </LogoContainer>
+            <WelcomeText variant="h6">
+              A project of Mayor Eric Pascual and the City Government of Gapan
+            </WelcomeText>
+          </WatermarkContainer>
+          {messages.map((message) => (
+            <Box
+              key={message.id}
               sx={{
-                color: '#6C757D',
-                marginTop: '4px',
-                marginX: '8px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: message.sender === 'user' ? 'flex-end' : 'flex-start',
+                marginBottom: 2,
               }}
             >
-              {message.timestamp.toLocaleTimeString()}
-            </Typography>
-          </Box>
-        ))}
+              <MessageBubble isUser={message.sender === 'user'}>
+                <Typography variant="body1" style={{ whiteSpace: 'pre-line' }}>
+                  {message.text}
+                </Typography>
+                {message.buttons && message.sender === 'bot' && (
+                  <ButtonContainer>
+                    {message.buttons.map((button, index) => {
+                      const [title, description] = button.title.split('\n');
+                      return (
+                        <ActionButton
+                          key={index}
+                          variant="outlined"
+                          onClick={() => handleButtonClick(button.payload)}
+                          fullWidth
+                        >
+                          <Box sx={{ width: '100%' }}>
+                            <ButtonTitle>{title}</ButtonTitle>
+                            <ButtonDescription>{description}</ButtonDescription>
+                          </Box>
+                        </ActionButton>
+                      );
+                    })}
+                  </ButtonContainer>
+                )}
+              </MessageBubble>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: BLUESHIRT_GRAY,
+                  marginTop: '4px',
+                  marginX: '8px',
+                }}
+              >
+                {message.timestamp.toLocaleTimeString()}
+              </Typography>
+            </Box>
+          ))}
+        </ChatContent>
       </ChatContainer>
 
       <InputContainer>
@@ -497,7 +546,7 @@ const ChatInterface: React.FC = () => {
           maxRows={4}
           sx={{
             '& .MuiOutlinedInput-root': {
-              backgroundColor: '#F8F9FA',
+              backgroundColor: '#FFFFFF',
               borderRadius: '24px',
               '& fieldset': {
                 borderColor: '#E9ECEF',
