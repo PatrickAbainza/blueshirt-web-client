@@ -48,55 +48,39 @@ const Container = styled(Box)({
   display: 'flex',
   flexDirection: 'column',
   height: '100vh',
-  backgroundColor: BLUESHIRT_LIGHT,
+  backgroundColor: '#f9f9f9',
+  fontFamily: 'Arial, sans-serif',
 });
 
-// Header Styles
 const Header = styled(Paper)({
-  padding: '16px 24px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  backgroundColor: BLUESHIRT_BLUE,
-  borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-  position: 'relative',
-  zIndex: 1,
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+  padding: '20px',
+  backgroundColor: '#007bff',
+  color: '#fff',
+  textAlign: 'center',
+  boxShadow: 'none',
+  borderRadius: 0,
 });
 
-const TitleSection = styled(Box)({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '12px',
-});
-
-const SmallLogo = styled('img')({
-  height: '32px',
-  width: 'auto',
-  filter: 'brightness(0) invert(1)', // Makes the logo white
-});
-
-const Title = styled(Typography)({
+const HeaderTitle = styled(Typography)({
   fontSize: '24px',
-  fontWeight: 700, // Bolder font for Filipino-style impact
-  color: '#FFFFFF',
+  fontWeight: 'bold',
   margin: 0,
-  letterSpacing: '0.5px',
 });
 
-const ProjectCredit = styled(Typography)({
-  fontSize: '14px',
-  color: 'rgba(255, 255, 255, 0.9)',
-  fontWeight: 500,
+const HeaderSubtitle = styled(Typography)({
+  fontSize: '0.9rem',
+  marginTop: '5px',
+  opacity: 0.9,
 });
 
-// Chat Container Styles
 const ChatContainer = styled(Box)({
   flex: 1,
   overflowY: 'auto',
   padding: '20px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
   position: 'relative',
-  backgroundColor: BLUESHIRT_LIGHT,
   '&::-webkit-scrollbar': {
     width: '8px',
   },
@@ -104,12 +88,23 @@ const ChatContainer = styled(Box)({
     background: '#f1f1f1',
   },
   '&::-webkit-scrollbar-thumb': {
-    background: BLUESHIRT_GRAY,
-    borderRadius: '8px',
+    background: '#888',
+    borderRadius: '4px',
   },
   '&::-webkit-scrollbar-thumb:hover': {
     background: '#555',
   },
+});
+
+const MessageContainer = styled(Box)({
+  maxWidth: '600px',
+  width: '100%',
+  margin: '20px auto',
+  padding: '20px',
+  backgroundColor: '#fff',
+  borderRadius: '10px',
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+  position: 'relative',
 });
 
 const ChatBackgroundWatermark = styled(Box)({
@@ -117,119 +112,58 @@ const ChatBackgroundWatermark = styled(Box)({
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '60%',
+  width: '50%',
   height: 'auto',
-  opacity: 0.03,
+  opacity: 0.05,
   pointerEvents: 'none',
   zIndex: 0,
   '& img': {
     width: '100%',
     height: 'auto',
-    objectFit: 'contain',
   },
-});
-
-const ChatContent = styled(Box)({
-  position: 'relative',
-  zIndex: 1,
-});
-
-const WatermarkContainer = styled(Box)({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: '20px',
-  gap: '20px',
-  marginBottom: '30px',
-});
-
-const LogoContainer = styled(Box)({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  width: '100%',
-  maxWidth: '600px',
-  marginBottom: '20px',
-});
-
-const Logo = styled('img')({
-  height: '80px',
-  width: 'auto',
-  objectFit: 'contain',
-});
-
-const WelcomeText = styled(Typography)({
-  textAlign: 'center',
-  color: '#fff',
-  marginBottom: '20px',
-  fontWeight: 500,
 });
 
 const MessageBubble = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'isUser',
 })<{ isUser: boolean }>(({ isUser }) => ({
-  padding: '12px 16px',
-  maxWidth: '85%',
-  borderRadius: '16px',
-  backgroundColor: isUser ? BLUESHIRT_BLUE : '#FFFFFF',
-  color: isUser ? '#FFFFFF' : '#000000',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-  position: 'relative',
-  '&:before': {
-    content: '""',
-    position: 'absolute',
-    bottom: '8px',
-    [isUser ? 'right' : 'left']: '-8px',
-    borderStyle: 'solid',
-    borderWidth: '8px',
-    borderColor: 'transparent',
-    borderRightColor: isUser ? 'transparent' : '#FFFFFF',
-    borderLeftColor: isUser ? BLUESHIRT_BLUE : 'transparent',
-    transform: isUser ? 'none' : 'rotate(180deg)',
-  },
+  padding: '15px 20px',
+  backgroundColor: isUser ? '#007bff' : '#fff',
+  color: isUser ? '#fff' : '#000',
+  borderRadius: '5px',
+  marginBottom: '10px',
+  width: '100%',
+  boxShadow: 'none',
+  border: isUser ? 'none' : '1px solid #eee',
 }));
 
-const ButtonContainer = styled(Box)({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '12px',
-  marginTop: '12px',
-  width: '100%',
-  maxWidth: '400px',
-});
-
 const ActionButton = styled(Button)({
-  backgroundColor: BLUESHIRT_YELLOW,
-  color: '#000000',
-  padding: '8px 16px',
-  borderRadius: '8px',
+  width: '100%',
+  padding: '10px 20px',
+  fontSize: '1rem',
+  backgroundColor: '#007bff',
+  color: '#fff',
   textTransform: 'none',
-  fontWeight: 600,
+  borderRadius: '5px',
+  marginBottom: '15px',
   '&:hover': {
-    backgroundColor: '#FFE44D',
+    backgroundColor: '#0056b3',
   },
-});
-
-const ButtonTitle = styled('span')({
-  fontWeight: 700,
-  marginRight: '8px',
-});
-
-const ButtonDescription = styled('span')({
-  display: 'block',
-  marginTop: '4px',
-  fontSize: '0.9em',
-  opacity: 0.9,
+  '& small': {
+    display: 'block',
+    fontSize: '0.8rem',
+    opacity: 0.8,
+  },
 });
 
 const InputContainer = styled(Box)({
-  padding: '16px',
-  backgroundColor: '#FFFFFF',
-  borderTop: '1px solid #E9ECEF',
+  padding: '20px',
+  backgroundColor: '#fff',
+  borderTop: '1px solid #eee',
   display: 'flex',
-  gap: '12px',
-  boxShadow: '0 -2px 4px rgba(0,0,0,0.05)',
+  gap: '10px',
+  maxWidth: '600px',
+  margin: '0 auto',
+  width: '100%',
 });
 
 const ChatInterface: React.FC = () => {
@@ -436,35 +370,8 @@ const ChatInterface: React.FC = () => {
   return (
     <Container>
       <Header elevation={0}>
-        <TitleSection>
-          <SmallLogo src="/assets/images/blueshirt-logo.png" alt="Blueshirt Logo" />
-          <Title variant="h1">Blueshirt Resume Builder</Title>
-        </TitleSection>
-        <ProjectCredit>
-          A Project of Mayor Eric B. Africa
-        </ProjectCredit>
-        {serverError && (
-          <Typography
-            color="error"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              position: 'absolute',
-              bottom: '-28px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              backgroundColor: '#FFE0E0',
-              padding: '6px 12px',
-              borderRadius: '8px',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              color: '#D32F2F',
-              fontWeight: 500,
-            }}
-          >
-            <span>⚠️</span> Server connection lost
-          </Typography>
-        )}
+        <HeaderTitle variant="h1">Blueshirt Resume Builder</HeaderTitle>
+        <HeaderSubtitle>A Project of Mayor Eric B. Africa</HeaderSubtitle>
       </Header>
 
       <ProgressIndicator progress={profileProgress} />
@@ -473,65 +380,45 @@ const ChatInterface: React.FC = () => {
         <ChatBackgroundWatermark>
           <img src="/assets/images/gapan-logo.png" alt="Gapan City Logo" />
         </ChatBackgroundWatermark>
-        
-        <ChatContent>
-          <WatermarkContainer>
-            <LogoContainer>
-              <Logo src="/assets/images/blueshirt-logo-text.png" alt="Blueshirt Logo" />
-              <Logo src="/assets/images/mayor-logo.png" alt="Mayor Logo" />
-            </LogoContainer>
-            <WelcomeText variant="h6">
-              A project of Mayor Eric Pascual and the City Government of Gapan
-            </WelcomeText>
-          </WatermarkContainer>
-          {messages.map((message) => (
-            <Box
-              key={message.id}
+
+        {messages.map((message) => (
+          <MessageContainer key={message.id}>
+            <MessageBubble isUser={message.sender === 'user'}>
+              <Typography style={{ whiteSpace: 'pre-line' }}>
+                {message.text}
+              </Typography>
+              {message.buttons && message.sender === 'bot' && (
+                <Box sx={{ mt: 2 }}>
+                  {message.buttons.map((button, index) => {
+                    const [title, description] = button.title.split('\n');
+                    return (
+                      <ActionButton
+                        key={index}
+                        onClick={() => handleButtonClick(button.payload)}
+                        fullWidth
+                      >
+                        {title}
+                        <small>{description}</small>
+                      </ActionButton>
+                    );
+                  })}
+                </Box>
+              )}
+            </MessageBubble>
+            <Typography
+              variant="caption"
               sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: message.sender === 'user' ? 'flex-end' : 'flex-start',
-                marginBottom: 2,
+                color: '#666',
+                fontSize: '0.9rem',
+                display: 'block',
+                textAlign: message.sender === 'user' ? 'right' : 'left',
+                mt: 1,
               }}
             >
-              <MessageBubble isUser={message.sender === 'user'}>
-                <Typography variant="body1" style={{ whiteSpace: 'pre-line' }}>
-                  {message.text}
-                </Typography>
-                {message.buttons && message.sender === 'bot' && (
-                  <ButtonContainer>
-                    {message.buttons.map((button, index) => {
-                      const [title, description] = button.title.split('\n');
-                      return (
-                        <ActionButton
-                          key={index}
-                          variant="outlined"
-                          onClick={() => handleButtonClick(button.payload)}
-                          fullWidth
-                        >
-                          <Box sx={{ width: '100%' }}>
-                            <ButtonTitle>{title}</ButtonTitle>
-                            <ButtonDescription>{description}</ButtonDescription>
-                          </Box>
-                        </ActionButton>
-                      );
-                    })}
-                  </ButtonContainer>
-                )}
-              </MessageBubble>
-              <Typography
-                variant="caption"
-                sx={{
-                  color: BLUESHIRT_GRAY,
-                  marginTop: '4px',
-                  marginX: '8px',
-                }}
-              >
-                {message.timestamp.toLocaleTimeString()}
-              </Typography>
-            </Box>
-          ))}
-        </ChatContent>
+              {message.timestamp.toLocaleTimeString()}
+            </Typography>
+          </MessageContainer>
+        ))}
       </ChatContainer>
 
       <InputContainer>
@@ -546,10 +433,15 @@ const ChatInterface: React.FC = () => {
           maxRows={4}
           sx={{
             '& .MuiOutlinedInput-root': {
-              backgroundColor: '#FFFFFF',
-              borderRadius: '24px',
+              backgroundColor: '#fff',
               '& fieldset': {
-                borderColor: '#E9ECEF',
+                borderColor: '#eee',
+              },
+              '&:hover fieldset': {
+                borderColor: '#007bff',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#007bff',
               },
             },
           }}
@@ -558,11 +450,10 @@ const ChatInterface: React.FC = () => {
           onClick={handleSend}
           disabled={!inputText.trim()}
           sx={{
-            backgroundColor: inputText.trim() ? BLUESHIRT_YELLOW : '#E9ECEF',
-            width: 48,
-            height: 48,
+            backgroundColor: inputText.trim() ? '#007bff' : '#eee',
+            color: '#fff',
             '&:hover': {
-              backgroundColor: inputText.trim() ? '#FFE44D' : '#E9ECEF',
+              backgroundColor: inputText.trim() ? '#0056b3' : '#eee',
             },
           }}
         >
