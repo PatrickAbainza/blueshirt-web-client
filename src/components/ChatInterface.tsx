@@ -100,17 +100,35 @@ const ChatContainer = styled(Box)({
 });
 
 const WatermarkContainer = styled(Box)({
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '35%',
-  opacity: 0.1,
-  pointerEvents: 'none',
-  zIndex: 0,
-  '@media (max-width: 600px)': {
-    width: '50%',
-  },
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '20px',
+  gap: '20px',
+  marginBottom: '30px',
+});
+
+const LogoContainer = styled(Box)({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  width: '100%',
+  maxWidth: '600px',
+  marginBottom: '20px',
+});
+
+const Logo = styled('img')({
+  height: '80px',
+  width: 'auto',
+  objectFit: 'contain',
+});
+
+const WelcomeText = styled(Typography)({
+  textAlign: 'center',
+  color: '#333',
+  marginBottom: '20px',
+  fontWeight: 500,
 });
 
 const MessageBubble = styled(Paper, {
@@ -409,11 +427,14 @@ const ChatInterface: React.FC = () => {
       <ProgressIndicator progress={profileProgress} />
       <ChatContainer ref={chatContainerRef}>
         <WatermarkContainer>
-          <img
-            src="/assets/images/gapan-logo.png"
-            alt="Government Logo"
-            style={{ width: '100%', height: 'auto' }}
-          />
+          <LogoContainer>
+            <Logo src="/assets/images/gapan-logo.png" alt="Gapan Logo" />
+            <Logo src="/assets/images/blueshirt-logo-text.png" alt="Blueshirt Logo" />
+            <Logo src="/assets/images/mayor-logo.png" alt="Mayor Logo" />
+          </LogoContainer>
+          <WelcomeText variant="h6">
+            A project of Mayor Eric Pascual and the City Government of Gapan
+          </WelcomeText>
         </WatermarkContainer>
         {messages.map((message) => (
           <Box
