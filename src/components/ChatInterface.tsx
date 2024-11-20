@@ -28,6 +28,18 @@ interface Message {
   }>;
 }
 
+interface Section {
+  name: string;
+  completed: boolean;
+  fields: string[];
+  completedFields: string[];
+}
+
+interface ProfileProgress {
+  sections: Section[];
+  overallProgress: number;
+}
+
 const Container = styled(Box)({
   display: 'flex',
   flexDirection: 'column',
@@ -168,7 +180,7 @@ const ChatInterface: React.FC = () => {
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const [profileProgress, setProfileProgress] = useState({
+  const [profileProgress, setProfileProgress] = useState<ProfileProgress>({
     sections: [
       {
         name: 'Personal Information',
@@ -214,18 +226,27 @@ const ChatInterface: React.FC = () => {
 
   // Update progress when receiving bot messages with slot values
   const updateProgressFromSlots = (slots: any) => {
-    setProfileProgress(prev => {
+    setProfileProgress((prev: ProfileProgress) => {
       const newSections = prev.sections.map(section => {
         const newCompletedFields = section.fields.filter(field => 
           slots[field] !== null && slots[field] !== undefined && slots[field] !== ''
         );
+        
         return {
           ...section,
           completedFields: newCompletedFields,
-          completed: newCompletedFields.length === section.fields.length
+          completed: newCompletedFields.length === section.fields.length,
         };
       });
-      return { ...prev, sections: newSections };
+
+      const totalFields = prev.sections.reduce((sum, section) => sum + section.fields.length, 0);
+      const completedFields = newSections.reduce((sum, section) => sum + section.completedFields.length, 0);
+      const newOverallProgress = (completedFields / totalFields) * 100;
+
+      return {
+        sections: newSections,
+        overallProgress: newOverallProgress,
+      };
     });
   };
 
